@@ -54,14 +54,25 @@ Route::prefix('admin')
         Route::delete('/assignments/{id}', [AdminController::class, 'deleteFacultyAssignment'])->name('assignments.delete');
         Route::get('/assignments/faculty/{id}', [AdminController::class, 'facultyClasses'])->name('assignments.facultyClasses');
 
+        // Subject Management
+        Route::get('/subjects', [AdminController::class, 'listSubjects'])->name('subjects.index');
+        Route::get('/subjects/create', [AdminController::class, 'createSubject'])->name('subjects.create');
+        Route::post('/subjects', [AdminController::class, 'storeSubject'])->name('subjects.store');
+        Route::get('/subjects/{id}/edit', [AdminController::class, 'editSubject'])->name('subjects.edit');
+        Route::put('/subjects/{id}', [AdminController::class, 'updateSubject'])->name('subjects.update');
+
         // Show/Add Students to a Section
         Route::get('/sections/{sectionId}/students', [AdminController::class, 'showSectionStudents'])->name('sections.showStudents');
         Route::post('/sections/{sectionId}/students', [AdminController::class, 'storeSectionStudents'])->name('sections.storeStudents');
         Route::get('/assignments/section/{sectionId}/enrolled-students', [AdminController::class, 'showEnrolledStudents'])->name('assignments.showEnrolledStudents');
 
         // Grading System
-        Route::get('/grading/{subjectId}/edit', [AdminController::class, 'editGradingSystem'])->name('editGradingSystem');
-        Route::put('/grading/{subjectId}', [AdminController::class, 'updateGradingSystem'])->name('updateGradingSystem');
+        Route::get('/grading/{subjectId}/edit', [AdminController::class, 'editGradingSystem'])
+            ->name('editGradingSystem');
+
+        // Handle form submission (PUT)
+        Route::put('/grading/{subjectId}', [AdminController::class, 'updateGradingSystem'])
+            ->name('updateGradingSystem');
 
         // Syllabus Upload Times
         Route::get('/syllabi', [AdminController::class, 'viewTeacherSyllabi'])->name('syllabi.index');
@@ -84,9 +95,14 @@ Route::prefix('faculty')
 
         // Syllabus
         Route::get('/syllabi', [FacultyController::class, 'listSyllabi'])->name('syllabus.index');
-        Route::get('/syllabus/{sectionId}/{subjectId}/{schoolYear}/{semester}/upload', [FacultyController::class, 'uploadSyllabus'])->name('syllabus.upload');
-        Route::post('/syllabus/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'storeSyllabus'])->name('syllabus.store');
-        Route::get('/syllabus/{id}/download', [FacultyController::class, 'downloadSyllabus'])->name('syllabus.download');
+        Route::get('/syllabus/{sectionId}/{subjectId}/{schoolYear}/{semester}/upload',
+            [FacultyController::class, 'uploadSyllabus'])
+            ->name('syllabus.upload');
+        // Process the syllabus file upload
+        Route::post('/syllabus/{sectionId}/{subjectId}/{schoolYear}/{semester}',
+            [FacultyController::class, 'storeSyllabus'])
+            ->name('syllabus.store');
+            Route::get('/syllabus/{id}/download', [FacultyController::class, 'downloadSyllabus'])->name('syllabus.download');
 
         // Seat Plan
         Route::get('/seatplan/{sectionId}/{subjectId}/{schoolYear}/{semester}/create', [FacultyController::class, 'createSeatPlan'])->name('seatplan.create');

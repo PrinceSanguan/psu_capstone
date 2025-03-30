@@ -14,10 +14,9 @@
     </nav>
     <!-- /.navbar -->
 
-    <!-- Main Sidebar Container -->
     @include('admin.layout.sidebar')
 
-    <!-- Content Wrapper. Contains page content -->
+    <!-- Content Wrapper -->
     <div class="content-wrapper">
         <!-- Content Header -->
         <div class="content-header">
@@ -34,7 +33,7 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-                <!-- Small boxes (Stat box) -->
+                <!-- ROW of Small Boxes (Stat boxes) -->
                 <div class="row">
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
@@ -57,13 +56,13 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>24</h3>
+                                <h3>{{ $subjects->count() }}</h3>
                                 <p>Active Subjects</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-book"></i>
                             </div>
-                            <!-- Example link to manage grading system -->
+                            <!-- Example link to manage grading system (subjectId=1 as sample) -->
                             <a href="{{ route('admin.editGradingSystem', 1) }}"
                                class="small-box-footer">
                                 Manage Grading <i class="fas fa-arrow-circle-right"></i>
@@ -110,13 +109,13 @@
                 </div>
                 <!-- /.row -->
 
-                <!-- Student List -->
+                <!-- STUDENT LIST -->
                 <div class="row" id="studentList">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <h3 class="card-title">Student List</h3>
-                                <!-- "Add Student" button up here too if you like -->
+                                <!-- "Add Student" button -->
                                 <a href="{{ route('admin.createStudent') }}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-user-plus"></i> Add Student
                                 </a>
@@ -131,43 +130,97 @@
                                             <th>Sex</th>
                                             <th>Course</th>
                                             <th>Year</th>
-                                            <th>Action</th> <!-- new column for removing -->
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($students as $student)
+                                    @foreach ($students as $student)
+                                        <tr>
+                                            <td>{{ $student->name }}</td>
+                                            <td>{{ $student->student_number }}</td>
+                                            <td>{{ $student->major }}</td>
+                                            <td>{{ $student->sex }}</td>
+                                            <td>{{ $student->course }}</td>
+                                            <td>{{ $student->year }}</td>
+                                            <td>
+                                                <!-- Remove student -->
+                                                <form action="{{ route('admin.deleteStudent', $student->id) }}"
+                                                      method="POST"
+                                                      style="display:inline-block"
+                                                      onsubmit="return confirm('Are you sure?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash-alt"></i> Remove
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div><!-- /.card-body -->
+                        </div><!-- /.card -->
+                    </div><!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+                <!-- SUBJECT LIST -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card card-info">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">Subject List</h3>
+                                <!-- Add subject button -->
+                                <a href="{{ route('admin.subjects.create') }}"
+                                   class="btn btn-sm btn-primary">
+                                   <i class="fas fa-plus"></i> Add Subject
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                @if(isset($subjects) && count($subjects) > 0)
+                                    <table id="subjectTable"
+                                           class="table table-bordered table-striped">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $student->name }}</td>
-                                                <td>{{ $student->student_number }}</td>
-                                                <td>{{ $student->major }}</td>
-                                                <td>{{ $student->sex }}</td>
-                                                <td>{{ $student->course }}</td>
-                                                <td>{{ $student->year }}</td>
+                                                <th>ID</th>
+                                                <th>Subject Name</th>
+                                                <th>Code</th>
+                                                <th>Units</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($subjects as $subj)
+                                            <tr>
+                                                <td>{{ $subj->id }}</td>
+                                                <td>{{ $subj->name }}</td>
+                                                <td>{{ $subj->code ?? 'N/A' }}</td>
+                                                <td>{{ $subj->units ?? 'N/A' }}</td>
                                                 <td>
-                                                    <!-- Remove student button -->
-                                                    <form action="{{ route('admin.deleteStudent', $student->id) }}"
-                                                          method="POST"
-                                                          style="display:inline-block">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-sm btn-danger"
-                                                                onclick="return confirm('Are you sure?')">
-                                                            <i class="fas fa-trash-alt"></i> Remove
-                                                        </button>
-                                                    </form>
+                                                    <!-- Link to update grading system -->
+                                                    <a href="{{ route('admin.editGradingSystem', $subj->id) }}"
+                                                       class="btn btn-sm btn-info">
+                                                       Update Grading
+                                                    </a>
+
+                                                    <!-- Edit subject -->
+                                                    <a href="{{ route('admin.subjects.edit', $subj->id) }}"
+                                                       class="btn btn-sm btn-warning">
+                                                       Edit Subject
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row (main row) -->
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <p>No subjects found.</p>
+                                @endif
+                            </div><!-- /.card-body -->
+                        </div><!-- /.card -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
 
             </div><!-- /.container-fluid -->
         </section>
@@ -183,32 +236,16 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <!-- DataTables & Plugins -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap4.min.js"></script>
-<!-- AdminLTE App -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
-<!-- Page specific script -->
 <script>
     $(function() {
-        var table = $('#studentTable').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "pageLength": 10,
-            "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip'
-        });
-
-        // Move search box to custom container if desired
-        $('#searchContainer').html($('.dataTables_filter'));
-        $('.dataTables_filter').css('text-align', 'left');
+        $('#studentTable').DataTable();
+        $('#subjectTable').DataTable();
     });
 </script>
 </body>

@@ -25,17 +25,22 @@ class FacultyController extends Controller
     {
         $user = Auth::user();
 
-        // Get assigned classes
+        // Get assigned classes for the faculty user.
         $assignedClasses = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->join('sections', 'section_subject.section_id', '=', 'sections.id')
             ->join('subjects', 'section_subject.subject_id', '=', 'subjects.id')
-            ->select('section_subject.*', 'sections.name as section_name',
-                     'subjects.name as subject_name', 'subjects.code as subject_code',
-                     'sections.id as section_id', 'subjects.id as subject_id')
+            ->select(
+                'section_subject.*',
+                'sections.name as section_name',
+                'subjects.name as subject_name',
+                'subjects.code as subject_code',
+                'sections.id as section_id',
+                'subjects.id as subject_id'
+            )
             ->get();
 
-        // Count students in assigned classes
+        // Count distinct students in assigned classes.
         $studentCount = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->join('section_student', function($join) {
@@ -43,78 +48,93 @@ class FacultyController extends Controller
                      ->on('section_subject.school_year', '=', 'section_student.school_year')
                      ->on('section_subject.semester', '=', 'section_student.semester');
             })
-            ->count(\DB::raw('DISTINCT section_student.student_id'));
+            ->count(DB::raw('DISTINCT section_student.student_id'));
 
-        // Count syllabi uploaded
+        // Count syllabi uploaded by this faculty.
         $syllabiCount = DB::table('syllabi')
             ->where('faculty_id', $user->id)
             ->count();
 
-        // Get recent activities
+        // Get recent activities (syllabi uploads, assessments created, scores entered).
         $recentActivities = $this->getRecentActivities($user->id);
 
         return view('faculty.dashboard', compact('user', 'assignedClasses', 'studentCount', 'syllabiCount', 'recentActivities'));
     }
 
     /**
-     * Get recent activities for faculty
+     * Get recent activities for the faculty.
+     *
+     * @param  int  $facultyId
+     * @return array
      */
     private function getRecentActivities($facultyId)
     {
-        // Get recent syllabi uploads
+        // Recent syllabus uploads.
         $syllabi = DB::table('syllabi')
             ->where('faculty_id', $facultyId)
             ->join('subjects', 'syllabi.subject_id', '=', 'subjects.id')
-            ->select('syllabi.*', 'subjects.name as subject_name', 'subjects.code as subject_code')
+            ->select(
+                'syllabi.*',
+                'subjects.name as subject_name',
+                'subjects.code as subject_code'
+            )
             ->orderBy('upload_timestamp', 'desc')
             ->limit(3)
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
-                    'type' => 'syllabus',
-                    'title' => $item->subject_code . ' - ' . $item->subject_name,
-                    'timestamp' => $item->upload_timestamp,
+                    'type'        => 'syllabus',
+                    'title'       => $item->subject_code . ' - ' . $item->subject_name,
+                    'timestamp'   => $item->upload_timestamp,
                     'description' => 'Uploaded Syllabus'
                 ];
             });
 
-        // Get recent assessments created
+        // Recent assessments created.
         $assessments = DB::table('assessments')
             ->where('faculty_id', $facultyId)
             ->join('subjects', 'assessments.subject_id', '=', 'subjects.id')
-            ->select('assessments.*', 'subjects.name as subject_name', 'subjects.code as subject_code')
+            ->select(
+                'assessments.*',
+                'subjects.name as subject_name',
+                'subjects.code as subject_code'
+            )
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
-                    'type' => 'assessment',
-                    'title' => $item->subject_code . ' - ' . $item->subject_name,
-                    'timestamp' => $item->created_at,
+                    'type'        => 'assessment',
+                    'title'       => $item->subject_code . ' - ' . $item->subject_name,
+                    'timestamp'   => $item->created_at,
                     'description' => 'Created ' . ucfirst($item->type) . ': ' . $item->title
                 ];
             });
 
-        // Get recent score entries
+        // Recent scores entered.
         $scores = DB::table('student_scores')
             ->join('assessments', 'student_scores.assessment_id', '=', 'assessments.id')
             ->where('assessments.faculty_id', $facultyId)
             ->join('subjects', 'assessments.subject_id', '=', 'subjects.id')
-            ->select('student_scores.*', 'assessments.title as assessment_title',
-                     'subjects.name as subject_name', 'subjects.code as subject_code')
+            ->select(
+                'student_scores.*',
+                'assessments.title as assessment_title',
+                'subjects.name as subject_name',
+                'subjects.code as subject_code'
+            )
             ->orderBy('student_scores.created_at', 'desc')
             ->limit(3)
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
-                    'type' => 'score',
-                    'title' => $item->subject_code . ' - ' . $item->subject_name,
-                    'timestamp' => $item->created_at,
+                    'type'        => 'score',
+                    'title'       => $item->subject_code . ' - ' . $item->subject_name,
+                    'timestamp'   => $item->created_at,
                     'description' => 'Entered Scores: ' . $item->assessment_title
                 ];
             });
 
-        // Combine and sort activities
+        // Merge all activities and sort them by timestamp descending.
         $activities = collect()
             ->merge($syllabi)
             ->merge($assessments)
@@ -128,7 +148,7 @@ class FacultyController extends Controller
     }
 
     /**
-     * Display list of classes assigned to faculty.
+     * Display list of classes assigned to the faculty.
      */
     public function myClasses()
     {
@@ -138,9 +158,14 @@ class FacultyController extends Controller
             ->where('faculty_id', $user->id)
             ->join('sections', 'section_subject.section_id', '=', 'sections.id')
             ->join('subjects', 'section_subject.subject_id', '=', 'subjects.id')
-            ->select('section_subject.*', 'sections.name as section_name',
-                     'subjects.name as subject_name', 'subjects.code as subject_code',
-                     'sections.id as section_id', 'subjects.id as subject_id')
+            ->select(
+                'section_subject.*',
+                'sections.name as section_name',
+                'subjects.name as subject_name',
+                'subjects.code as subject_code',
+                'sections.id as section_id',
+                'subjects.id as subject_id'
+            )
             ->orderBy('section_subject.school_year', 'desc')
             ->orderBy('section_subject.semester', 'desc')
             ->get();
@@ -155,7 +180,7 @@ class FacultyController extends Controller
     {
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify the class exists for this faculty.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -172,7 +197,7 @@ class FacultyController extends Controller
         $section = DB::table('sections')->where('id', $sectionId)->first();
         $subject = DB::table('subjects')->where('id', $subjectId)->first();
 
-        // Get students in this section
+        // Get students enrolled in the section.
         $students = DB::table('section_student')
             ->where('section_id', $sectionId)
             ->where('school_year', $schoolYear)
@@ -181,14 +206,14 @@ class FacultyController extends Controller
             ->select('users.*')
             ->get();
 
-        // Get grading system for this subject
+        // Get the grading system for this subject.
         $gradingSystem = DB::table('grading_systems')
             ->where('subject_id', $subjectId)
             ->where('school_year', $schoolYear)
             ->where('semester', $semester)
             ->first();
 
-        // Get assessments for this class
+        // Get assessments for this class.
         $assessments = DB::table('assessments')
             ->where('subject_id', $subjectId)
             ->where('faculty_id', $user->id)
@@ -199,7 +224,7 @@ class FacultyController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        // Check if syllabus exists
+        // Check if a syllabus exists.
         $syllabus = DB::table('syllabi')
             ->where('subject_id', $subjectId)
             ->where('faculty_id', $user->id)
@@ -207,7 +232,7 @@ class FacultyController extends Controller
             ->where('semester', $semester)
             ->first();
 
-        // Check if seat plan exists
+        // Check if a seat plan exists.
         $seatPlan = DB::table('seat_plans')
             ->where('section_id', $sectionId)
             ->where('subject_id', $subjectId)
@@ -221,42 +246,26 @@ class FacultyController extends Controller
     }
 
     /**
-     * Show form to upload syllabus.
+     * Show the form to upload a syllabus.
      */
     public function uploadSyllabus($sectionId, $subjectId, $schoolYear, $semester)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
+    // Verify class ownership...
+    $section = DB::table('sections')->where('id', $sectionId)->first();
+    $subject = DB::table('subjects')->where('id', $subjectId)->first();
+    $existingSyllabus = DB::table('syllabi')
+        ->where('subject_id', $subjectId)
+        ->where('faculty_id', $user->id)
+        ->where('school_year', $schoolYear)
+        ->where('semester', $semester)
+        ->first();
 
-        // Verify this class belongs to the faculty
-        $classExists = DB::table('section_subject')
-            ->where('faculty_id', $user->id)
-            ->where('section_id', $sectionId)
-            ->where('subject_id', $subjectId)
-            ->where('school_year', $schoolYear)
-            ->where('semester', $semester)
-            ->exists();
-
-        if (!$classExists) {
-            return redirect()->route('faculty.classes.index')
-                ->with('error', 'You are not authorized to upload a syllabus for this class');
-        }
-
-        $section = DB::table('sections')->where('id', $sectionId)->first();
-        $subject = DB::table('subjects')->where('id', $subjectId)->first();
-
-        // Check if syllabus already exists
-        $existingSyllabus = DB::table('syllabi')
-            ->where('subject_id', $subjectId)
-            ->where('faculty_id', $user->id)
-            ->where('school_year', $schoolYear)
-            ->where('semester', $semester)
-            ->first();
-
-        return view('faculty.syllabus.upload', compact('section', 'subject', 'schoolYear', 'semester', 'existingSyllabus'));
-    }
+    return view('faculty.syllabus.upload', compact('section', 'subject', 'schoolYear', 'semester', 'existingSyllabus'));
+}
 
     /**
-     * Store uploaded syllabus.
+     * Store the uploaded syllabus file.
      */
     public function storeSyllabus(Request $request, $sectionId, $subjectId, $schoolYear, $semester)
     {
@@ -266,7 +275,7 @@ class FacultyController extends Controller
 
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify this class belongs to the faculty.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -280,7 +289,7 @@ class FacultyController extends Controller
                 ->with('error', 'You are not authorized to upload a syllabus for this class');
         }
 
-        // Check if syllabus already exists
+        // If an existing syllabus is found, remove it.
         $existingSyllabus = DB::table('syllabi')
             ->where('subject_id', $subjectId)
             ->where('faculty_id', $user->id)
@@ -289,17 +298,16 @@ class FacultyController extends Controller
             ->first();
 
         if ($existingSyllabus) {
-            // Delete old file if replacing
             Storage::delete($existingSyllabus->file_path);
             DB::table('syllabi')->where('id', $existingSyllabus->id)->delete();
         }
 
-        // Store file
+        // Store the uploaded file.
         $file = $request->file('syllabus_file');
         $originalFilename = $file->getClientOriginalName();
         $path = $file->store('syllabi');
 
-        // Create syllabus record
+        // Insert the new syllabus record.
         DB::table('syllabi')->insert([
             'subject_id' => $subjectId,
             'faculty_id' => $user->id,
@@ -321,19 +329,18 @@ class FacultyController extends Controller
     }
 
     /**
-     * Download syllabus file
+     * Download a syllabus file.
      */
     public function downloadSyllabus($id)
     {
         $user = Auth::user();
-
         $syllabus = DB::table('syllabi')->where('id', $id)->first();
 
         if (!$syllabus) {
             abort(404, 'Syllabus not found');
         }
 
-        // Check if this is faculty's own syllabus or is assigned to this subject
+        // Ensure the syllabus belongs to the faculty or one of their assigned classes.
         $isOwner = $syllabus->faculty_id == $user->id;
         $isAssigned = DB::table('section_subject')
             ->where('faculty_id', $user->id)
@@ -350,13 +357,13 @@ class FacultyController extends Controller
     }
 
     /**
-     * Show form to create a seat plan
+     * Show form to create a seat plan.
      */
     public function createSeatPlan($sectionId, $subjectId, $schoolYear, $semester)
     {
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -373,7 +380,7 @@ class FacultyController extends Controller
         $section = DB::table('sections')->where('id', $sectionId)->first();
         $subject = DB::table('subjects')->where('id', $subjectId)->first();
 
-        // Get students in this section
+        // Retrieve students enrolled in this section.
         $students = DB::table('section_student')
             ->where('section_id', $sectionId)
             ->where('school_year', $schoolYear)
@@ -382,7 +389,7 @@ class FacultyController extends Controller
             ->select('users.*')
             ->get();
 
-        // Check if seat plan already exists
+        // Check if a seat plan already exists.
         $existingSeatPlan = DB::table('seat_plans')
             ->where('section_id', $sectionId)
             ->where('subject_id', $subjectId)
@@ -391,12 +398,11 @@ class FacultyController extends Controller
             ->where('semester', $semester)
             ->first();
 
-        return view('faculty.seatplan.create', compact('section', 'subject', 'students',
-            'existingSeatPlan', 'schoolYear', 'semester'));
+        return view('faculty.seatplan.create', compact('section', 'subject', 'students', 'existingSeatPlan', 'schoolYear', 'semester'));
     }
 
     /**
-     * Store seat plan
+     * Store a new or updated seat plan.
      */
     public function storeSeatPlan(Request $request, $sectionId, $subjectId, $schoolYear, $semester)
     {
@@ -408,7 +414,7 @@ class FacultyController extends Controller
 
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -422,7 +428,7 @@ class FacultyController extends Controller
                 ->with('error', 'You are not authorized to create a seat plan for this class');
         }
 
-        // Check if seat plan already exists
+        // Check if a seat plan exists already.
         $existingSeatPlan = DB::table('seat_plans')
             ->where('section_id', $sectionId)
             ->where('subject_id', $subjectId)
@@ -432,44 +438,42 @@ class FacultyController extends Controller
             ->first();
 
         $data = [
-            'section_id' => $sectionId,
-            'subject_id' => $subjectId,
-            'faculty_id' => $user->id,
-            'rows' => $request->rows,
-            'columns' => $request->columns,
+            'section_id'  => $sectionId,
+            'subject_id'  => $subjectId,
+            'faculty_id'  => $user->id,
+            'rows'        => $request->rows,
+            'columns'     => $request->columns,
             'arrangement' => json_encode($request->arrangement),
             'school_year' => $schoolYear,
-            'semester' => $semester,
-            'updated_at' => now(),
+            'semester'    => $semester,
+            'updated_at'  => now(),
         ];
 
         if ($existingSeatPlan) {
-            // Update existing seat plan
             DB::table('seat_plans')
                 ->where('id', $existingSeatPlan->id)
                 ->update($data);
         } else {
-            // Create new seat plan
             $data['created_at'] = now();
             DB::table('seat_plans')->insert($data);
         }
 
         return redirect()->route('faculty.classes.details', [
-            'sectionId' => $sectionId,
-            'subjectId' => $subjectId,
+            'sectionId'  => $sectionId,
+            'subjectId'  => $subjectId,
             'schoolYear' => $schoolYear,
-            'semester' => $semester,
+            'semester'   => $semester,
         ])->with('success', 'Seat plan saved successfully');
     }
 
     /**
-     * View seat plan
+     * View an existing seat plan.
      */
     public function viewSeatPlan($sectionId, $subjectId, $schoolYear, $semester)
     {
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -486,7 +490,7 @@ class FacultyController extends Controller
         $section = DB::table('sections')->where('id', $sectionId)->first();
         $subject = DB::table('subjects')->where('id', $subjectId)->first();
 
-        // Get students in this section
+        // Retrieve students enrolled in the section.
         $students = DB::table('section_student')
             ->where('section_id', $sectionId)
             ->where('school_year', $schoolYear)
@@ -496,7 +500,7 @@ class FacultyController extends Controller
             ->get()
             ->keyBy('id');
 
-        // Get seat plan
+        // Get the seat plan.
         $seatPlan = DB::table('seat_plans')
             ->where('section_id', $sectionId)
             ->where('subject_id', $subjectId)
@@ -507,17 +511,16 @@ class FacultyController extends Controller
 
         if (!$seatPlan) {
             return redirect()->route('faculty.seatplan.create', [
-                'sectionId' => $sectionId,
-                'subjectId' => $subjectId,
+                'sectionId'  => $sectionId,
+                'subjectId'  => $subjectId,
                 'schoolYear' => $schoolYear,
-                'semester' => $semester,
+                'semester'   => $semester,
             ])->with('warning', 'No seat plan found. Please create one.');
         }
 
         $arrangementData = json_decode($seatPlan->arrangement, true);
 
-        return view('faculty.seatplan.view', compact('section', 'subject', 'students',
-            'seatPlan', 'arrangementData', 'schoolYear', 'semester'));
+        return view('faculty.seatplan.view', compact('section', 'subject', 'students', 'seatPlan', 'arrangementData', 'schoolYear', 'semester'));
     }
 
     /**
@@ -527,7 +530,7 @@ class FacultyController extends Controller
     {
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -548,7 +551,7 @@ class FacultyController extends Controller
     }
 
     /**
-     * Store new assessment.
+     * Store a new assessment.
      */
     public function storeAssessment(Request $request, $sectionId, $subjectId, $schoolYear, $semester)
     {
@@ -563,7 +566,7 @@ class FacultyController extends Controller
 
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -577,7 +580,7 @@ class FacultyController extends Controller
                 ->with('error', 'You are not authorized to create an assessment for this class');
         }
 
-        // Create assessment
+        // Insert new assessment record.
         $assessmentId = DB::table('assessments')->insertGetId([
             'subject_id' => $subjectId,
             'faculty_id' => $user->id,
@@ -608,7 +611,7 @@ class FacultyController extends Controller
     {
         $user = Auth::user();
 
-        // Get assessment details
+        // Get assessment details.
         $assessment = DB::table('assessments')->where('id', $assessmentId)->first();
 
         if (!$assessment || $assessment->faculty_id != $user->id) {
@@ -618,7 +621,7 @@ class FacultyController extends Controller
 
         $subject = DB::table('subjects')->where('id', $assessment->subject_id)->first();
 
-        // Get students
+        // Retrieve students for the assessment's class.
         $students = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('subject_id', $assessment->subject_id)
@@ -634,7 +637,7 @@ class FacultyController extends Controller
             ->distinct()
             ->get();
 
-        // Get existing scores
+        // Get existing scores.
         $scores = DB::table('student_scores')
             ->where('assessment_id', $assessmentId)
             ->pluck('score', 'student_id');
@@ -649,7 +652,7 @@ class FacultyController extends Controller
     {
         $user = Auth::user();
 
-        // Get assessment details
+        // Get assessment details.
         $assessment = DB::table('assessments')->where('id', $assessmentId)->first();
 
         if (!$assessment || $assessment->faculty_id != $user->id) {
@@ -657,23 +660,21 @@ class FacultyController extends Controller
                 ->with('error', 'You are not authorized to manage scores for this assessment');
         }
 
-        // Validate scores
+        // Validate the incoming scores.
         $request->validate([
             'scores' => 'required|array',
             'scores.*' => 'nullable|numeric|min:0|max:' . $assessment->max_score,
         ]);
 
-        // Save scores
+        // Save each score.
         foreach ($request->scores as $studentId => $score) {
             if ($score !== null) {
-                // Check if score exists
                 $exists = DB::table('student_scores')
                     ->where('assessment_id', $assessmentId)
                     ->where('student_id', $studentId)
                     ->exists();
 
                 if ($exists) {
-                    // Update
                     DB::table('student_scores')
                         ->where('assessment_id', $assessmentId)
                         ->where('student_id', $studentId)
@@ -682,7 +683,6 @@ class FacultyController extends Controller
                             'updated_at' => now(),
                         ]);
                 } else {
-                    // Insert
                     DB::table('student_scores')->insert([
                         'assessment_id' => $assessmentId,
                         'student_id' => $studentId,
@@ -705,7 +705,7 @@ class FacultyController extends Controller
     {
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -722,7 +722,7 @@ class FacultyController extends Controller
         $section = DB::table('sections')->where('id', $sectionId)->first();
         $subject = DB::table('subjects')->where('id', $subjectId)->first();
 
-        // Get students in this section
+        // Get enrolled students.
         $students = DB::table('section_student')
             ->where('section_id', $sectionId)
             ->where('school_year', $schoolYear)
@@ -731,49 +731,48 @@ class FacultyController extends Controller
             ->select('users.*')
             ->get();
 
-        // Get grading system for this subject
+        // Get the grading system.
         $gradingSystem = DB::table('grading_systems')
             ->where('subject_id', $subjectId)
             ->where('school_year', $schoolYear)
             ->where('semester', $semester)
             ->first();
 
-        // Get assessments for this class
+        // Get assessments.
         $assessments = DB::table('assessments')
             ->where('subject_id', $subjectId)
             ->where('faculty_id', $user->id)
             ->where('school_year', $schoolYear)
             ->where('semester', $semester)
+            ->orderBy('term')
+            ->orderBy('type')
             ->get();
 
-        // Calculate overall performance
-        $performance = [];
+        // Calculate performance per student.
+        $studentGrades = [];
         $passingCount = 0;
         $failingCount = 0;
 
         foreach ($students as $student) {
-            $studentPerformance = [
+            $midtermGrade = $this->calculateTerm('midterm', $student->id, $assessments, $gradingSystem);
+            $finalGrade = $this->calculateTerm('final', $student->id, $assessments, $gradingSystem);
+            $overallGrade = ($midtermGrade + $finalGrade) / 2;
+
+            $studentGrades[] = [
                 'student' => $student,
-                'midterm' => $this->calculateTerm('midterm', $student->id, $assessments, $gradingSystem),
-                'final' => $this->calculateTerm('final', $student->id, $assessments, $gradingSystem),
+                'midterm_grade' => $midtermGrade,
+                'final_grade' => $finalGrade,
+                'overall_grade' => $overallGrade,
+                'status' => $overallGrade >= 75 ? 'Passing' : 'Failing',
             ];
 
-            // Calculate final grade (average of midterm and final)
-            $studentPerformance['final_grade'] = ($studentPerformance['midterm'] + $studentPerformance['final']) / 2;
-
-            // Determine if passing (75% is passing)
-            $studentPerformance['is_passing'] = $studentPerformance['final_grade'] >= 75;
-
-            if ($studentPerformance['is_passing']) {
+            if ($overallGrade >= 75) {
                 $passingCount++;
             } else {
                 $failingCount++;
             }
-
-            $performance[] = $studentPerformance;
         }
 
-        // Statistics
         $stats = [
             'total_students' => count($students),
             'passing_count' => $passingCount,
@@ -782,12 +781,11 @@ class FacultyController extends Controller
             'failing_percentage' => count($students) > 0 ? ($failingCount / count($students) * 100) : 0,
         ];
 
-        return view('faculty.analytics.index', compact('section', 'subject', 'performance',
-            'stats', 'schoolYear', 'semester'));
+        return view('faculty.analytics.index', compact('section', 'subject', 'performance', 'stats', 'schoolYear', 'semester', 'studentGrades', 'students'));
     }
 
     /**
-     * Helper method to calculate term grades
+     * Helper method to calculate term grades.
      */
     private function calculateTerm($term, $studentId, $assessments, $gradingSystem)
     {
@@ -796,21 +794,18 @@ class FacultyController extends Controller
         }
 
         $termAssessments = collect($assessments)->where('term', $term);
-
         $quizzes = $termAssessments->where('type', 'quiz');
         $unitTests = $termAssessments->where('type', 'unit_test');
         $activities = $termAssessments->where('type', 'activity');
-        $exams = $termAssessments->filter(function($assessment) {
-            return $assessment->type == 'midterm_exam' || $assessment->type == 'final_exam';
+        $exams = $termAssessments->filter(function ($assessment) {
+            return in_array($assessment->type, ['midterm_exam', 'final_exam']);
         });
 
-        // Calculate component grades
         $quizGrade = $this->calculateComponentGrade($quizzes, $studentId);
         $unitTestGrade = $this->calculateComponentGrade($unitTests, $studentId);
         $activityGrade = $this->calculateComponentGrade($activities, $studentId);
         $examGrade = $this->calculateComponentGrade($exams, $studentId);
 
-        // Calculate weighted grade
         $grade = ($quizGrade * $gradingSystem->quiz_percentage / 100) +
                  ($unitTestGrade * $gradingSystem->unit_test_percentage / 100) +
                  ($activityGrade * $gradingSystem->activity_percentage / 100) +
@@ -820,7 +815,7 @@ class FacultyController extends Controller
     }
 
     /**
-     * Helper method to calculate component grades
+     * Helper method to calculate component grades.
      */
     private function calculateComponentGrade($assessments, $studentId)
     {
@@ -840,7 +835,6 @@ class FacultyController extends Controller
             if ($score) {
                 $totalScore += $score->score;
             }
-
             $totalMaxScore += $assessment->max_score;
         }
 
@@ -852,13 +846,13 @@ class FacultyController extends Controller
     }
 
     /**
-     * Generate report for a class
+     * Generate report for a class.
      */
     public function generateReport($sectionId, $subjectId, $schoolYear, $semester)
     {
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -875,7 +869,6 @@ class FacultyController extends Controller
         $section = DB::table('sections')->where('id', $sectionId)->first();
         $subject = DB::table('subjects')->where('id', $subjectId)->first();
 
-        // Get students in this section
         $students = DB::table('section_student')
             ->where('section_id', $sectionId)
             ->where('school_year', $schoolYear)
@@ -884,14 +877,12 @@ class FacultyController extends Controller
             ->select('users.*')
             ->get();
 
-        // Get grading system for this subject
         $gradingSystem = DB::table('grading_systems')
             ->where('subject_id', $subjectId)
             ->where('school_year', $schoolYear)
             ->where('semester', $semester)
             ->first();
 
-        // Get assessments for this class
         $assessments = DB::table('assessments')
             ->where('subject_id', $subjectId)
             ->where('faculty_id', $user->id)
@@ -901,9 +892,7 @@ class FacultyController extends Controller
             ->orderBy('type')
             ->get();
 
-        // Calculate grades for each student
         $studentGrades = [];
-
         foreach ($students as $student) {
             $midtermGrade = $this->calculateTerm('midterm', $student->id, $assessments, $gradingSystem);
             $finalGrade = $this->calculateTerm('final', $student->id, $assessments, $gradingSystem);
@@ -918,19 +907,25 @@ class FacultyController extends Controller
             ];
         }
 
-        // Display the report view
-        return view('faculty.reports.generate', compact('section', 'subject', 'students',
-            'gradingSystem', 'assessments', 'studentGrades', 'schoolYear', 'semester'));
+        $stats = [
+            'total_students' => count($students),
+            'passing_count' => count(array_filter($studentGrades, fn($sg) => $sg['status'] == 'Passing')),
+            'failing_count' => count(array_filter($studentGrades, fn($sg) => $sg['status'] == 'Failing')),
+            'passing_percentage' => count($students) > 0 ? (count(array_filter($studentGrades, fn($sg) => $sg['status'] == 'Passing')) / count($students) * 100) : 0,
+            'failing_percentage' => count($students) > 0 ? (count(array_filter($studentGrades, fn($sg) => $sg['status'] == 'Failing')) / count($students) * 100) : 0,
+        ];
+
+        return view('faculty.reports.generate', compact('section', 'subject', 'students', 'gradingSystem', 'assessments', 'studentGrades', 'schoolYear', 'semester', 'stats'));
     }
 
     /**
-     * Download report as PDF
+     * Download report as PDF.
      */
     public function downloadReport($sectionId, $subjectId, $schoolYear, $semester)
     {
         $user = Auth::user();
 
-        // Verify this class belongs to the faculty
+        // Verify class ownership.
         $classExists = DB::table('section_subject')
             ->where('faculty_id', $user->id)
             ->where('section_id', $sectionId)
@@ -944,12 +939,8 @@ class FacultyController extends Controller
                 ->with('error', 'You are not authorized to download reports for this class');
         }
 
-        // Generate PDF report (implementation would depend on the PDF library used)
-        // For example using dompdf:
-        // $pdf = PDF::loadView('faculty.reports.pdf', $data);
-        // return $pdf->download('report.pdf');
-
-        // For now, just redirect back with a message
+        // Here you would integrate with a PDF library.
+        // For now, we simply redirect back with an info message.
         return redirect()->route('faculty.reports.generate', [
             'sectionId' => $sectionId,
             'subjectId' => $subjectId,
@@ -959,21 +950,41 @@ class FacultyController extends Controller
     }
 
     /**
-     * List all syllabi uploaded by faculty
+     * List all syllabi uploaded by the faculty.
      */
     public function listSyllabi()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        $syllabi = DB::table('syllabi')
-            ->where('faculty_id', $user->id)
-            ->join('subjects', 'syllabi.subject_id', '=', 'subjects.id')
-            ->select('syllabi.*', 'subjects.name as subject_name', 'subjects.code as subject_code')
-            ->orderBy('syllabi.school_year', 'desc')
-            ->orderBy('syllabi.semester', 'desc')
-            ->orderBy('syllabi.upload_timestamp', 'desc')
-            ->get();
+    // Get all syllabi uploaded by this faculty.
+    $syllabi = DB::table('syllabi')
+        ->where('faculty_id', $user->id)
+        ->join('subjects', 'syllabi.subject_id', '=', 'subjects.id')
+        ->select('syllabi.*', 'subjects.name as subject_name', 'subjects.code as subject_code')
+        ->orderBy('syllabi.upload_timestamp', 'desc')
+        ->get();
 
-        return view('faculty.syllabus.index', compact('syllabi'));
+    // You must pass a section, subject, schoolYear, and semester
+    // For example, you can use the first assigned class details.
+    // (Adjust this logic based on your application requirements)
+    $assignedClass = DB::table('section_subject')
+        ->where('faculty_id', $user->id)
+        ->first();
+
+    if ($assignedClass) {
+        $section = DB::table('sections')->where('id', $assignedClass->section_id)->first();
+        $subject = DB::table('subjects')->where('id', $assignedClass->subject_id)->first();
+        $schoolYear = $assignedClass->school_year;
+        $semester = $assignedClass->semester;
+    } else {
+        // Fallback defaults if no class is assigned.
+        $section = null;
+        $subject = null;
+        $schoolYear = null;
+        $semester = null;
     }
+
+    return view('faculty.syllabus.index', compact('syllabi', 'section', 'subject', 'schoolYear', 'semester'));
+}
+
 }

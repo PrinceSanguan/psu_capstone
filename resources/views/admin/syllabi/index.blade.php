@@ -8,7 +8,7 @@
         <thead>
             <tr>
                 <th>Faculty Name</th>
-                <th>Subject ID</th>
+                <th>Subject</th>
                 <th>File</th>
                 <th>Uploaded At</th>
             </tr>
@@ -17,12 +17,14 @@
         @forelse($syllabi as $syl)
             <tr>
                 <td>{{ $syl->faculty_name }}</td>
-                <td>{{ $syl->subject_id }}</td>
+                <td>{{ $syl->subject_code ?? 'N/A' }} - {{ $syl->subject_name }}</td>
                 <td>{{ $syl->original_filename ?? 'File' }}</td>
                 <td>{{ $syl->upload_timestamp }}</td>
             </tr>
         @empty
-            <tr><td colspan="4" class="text-center">No syllabus uploads found.</td></tr>
+            <tr>
+                <td colspan="4" class="text-center">No syllabus uploads found.</td>
+            </tr>
         @endforelse
         </tbody>
     </table>

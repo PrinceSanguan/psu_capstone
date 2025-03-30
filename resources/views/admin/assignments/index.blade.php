@@ -4,7 +4,7 @@
 <div class="container mt-3">
     <h1>Faculty Assignments</h1>
 
-    {{-- Validation errors & success messages --}}
+    {{-- Show validation errors & success messages --}}
     @if($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -42,19 +42,32 @@
                 <!-- Section Name -->
                 <div class="form-group">
                     <label for="section_name">Section Name</label>
-                    <input type="text" name="section_name" id="section_name" class="form-control" required>
+                    <input type="text" name="section_name" id="section_name"
+                           class="form-control" required>
                 </div>
 
-                <!-- Subject Name -->
+                <!-- Subject Dropdown -->
                 <div class="form-group">
-                    <label for="subject_name">Subject Name</label>
-                    <input type="text" name="subject_name" id="subject_name" class="form-control" required>
+                    <label for="subject_id">Select Subject</label>
+                    <select name="subject_id" id="subject_id" class="form-control" required>
+                        <option value="">-- Choose Subject --</option>
+                        @foreach($subjects as $subj)
+                            <option value="{{ $subj->id }}">{{ $subj->name }}</option>
+                        @endforeach
+                    </select>
+                    <small>
+                        <a href="{{ route('admin.subjects.create') }}">
+                            Add New Subject
+                        </a>
+                    </small>
                 </div>
 
                 <!-- School Year -->
                 <div class="form-group">
                     <label for="school_year">School Year</label>
-                    <input type="text" name="school_year" id="school_year" class="form-control" placeholder="e.g. 2025-2026" required>
+                    <input type="text" name="school_year" id="school_year"
+                           class="form-control" placeholder="e.g. 2025-2026"
+                           required>
                 </div>
 
                 <!-- Semester -->
@@ -67,12 +80,17 @@
                         <option value="Summer">Summer</option>
                     </select>
                 </div>
+
             </div>
+            <!-- /.card-body -->
             <div class="card-footer">
-                <button class="btn btn-primary" type="submit">Assign Faculty</button>
+                <button class="btn btn-primary" type="submit">
+                    Assign Faculty
+                </button>
             </div>
         </form>
     </div>
+    <!-- /.card card-primary -->
 
     <!-- List of existing assignments -->
     <div class="card card-secondary">
@@ -100,11 +118,13 @@
                         <td>{{ $assign->school_year }}</td>
                         <td>{{ $assign->semester }}</td>
                         <td>
-                            <!-- Link to view faculty classes -->
+                            <!-- Link to view faculty's assigned classes -->
                             <a href="{{ route('admin.assignments.facultyClasses', $assign->faculty_id) }}"
-                               class="btn btn-sm btn-info">View Classes</a>
+                               class="btn btn-sm btn-info">
+                                View Classes
+                            </a>
 
-                            <!-- Link to add students to the created section -->
+                            <!-- Add students to this new section -->
                             <a href="{{ route('admin.sections.showStudents', $assign->section_id) }}"
                                class="btn btn-sm btn-warning">
                                 Add Students
@@ -112,7 +132,8 @@
 
                             <!-- Delete assignment -->
                             <form action="{{ route('admin.assignments.delete', $assign->id) }}"
-                                  method="POST" style="display:inline-block">
+                                  method="POST"
+                                  style="display:inline-block">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-danger"
@@ -123,7 +144,11 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="text-center">No assignments found.</td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            No assignments found.
+                        </td>
+                    </tr>
                 @endforelse
                 </tbody>
             </table>
