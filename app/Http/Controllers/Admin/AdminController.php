@@ -9,6 +9,7 @@ use App\Models\GradingSystem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use App\Services\SchoolYearService;
 
 class AdminController extends Controller
 {
@@ -243,6 +244,9 @@ class AdminController extends Controller
             'semester'     => 'required|in:First,Second,Summer',
         ]);
 
+        // Format school year consistently
+        $schoolYear = SchoolYearService::format($validated['school_year']);
+
         // 1) Create a new row in 'sections' table
         $sectionId = DB::table('sections')->insertGetId([
             'name'       => $validated['section_name'],
@@ -258,7 +262,7 @@ class AdminController extends Controller
             'faculty_id'  => $validated['faculty_id'],
             'section_id'  => $sectionId,
             'subject_id'  => $subjectId,
-            'school_year' => $validated['school_year'],
+            'school_year' => $schoolYear,
             'semester'    => $validated['semester'],
             'created_at'  => now(),
             'updated_at'  => now(),
@@ -332,9 +336,12 @@ class AdminController extends Controller
             'semester'   => 'required|in:First,Second,Summer',
         ]);
 
+        // Format school year consistently
+        $schoolYear = SchoolYearService::format($validated['school_year']);
+
         DB::table('section_student')
             ->where('section_id', $sectionId)
-            ->where('school_year', $validated['school_year'])
+            ->where('school_year', $schoolYear)
             ->where('semester', $validated['semester'])
             ->delete();
 
@@ -343,7 +350,7 @@ class AdminController extends Controller
                 DB::table('section_student')->insert([
                     'section_id'  => $sectionId,
                     'student_id'  => $studentId,
-                    'school_year' => $validated['school_year'],
+                    'school_year' => $schoolYear,
                     'semester'    => $validated['semester'],
                     'created_at'  => now(),
                     'updated_at'  => now(),

@@ -104,11 +104,9 @@ Route::prefix('faculty')
             ->name('syllabus.store');
             Route::get('/syllabus/{id}/download', [FacultyController::class, 'downloadSyllabus'])->name('syllabus.download');
 
-        // Seat Plan
-        Route::get('/seatplan/{sectionId}/{subjectId}/{schoolYear}/{semester}/create', [FacultyController::class, 'createSeatPlan'])->name('seatplan.create');
-        Route::post('/seatplan/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'storeSeatPlan'])->name('seatplan.store');
-        Route::get('/seatplan/{sectionId}/{subjectId}/{schoolYear}/{semester}/view', [FacultyController::class, 'viewSeatPlan'])->name('seatplan.view');
-
+            Route::get('/seatplan/{sectionId}/{subjectId}/{schoolYear}/{semester}/create', [FacultyController::class, 'createSeatPlan'])->name('seatplan.create');
+            Route::post('/seatplan/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'storeSeatPlan'])->name('seatplan.store');
+            Route::get('/seatplan/{sectionId}/{subjectId}/{schoolYear}/{semester}/view', [FacultyController::class, 'viewSeatPlan'])->name('seatplan.view');
         // Assessment
         Route::get('/assessment/{sectionId}/{subjectId}/{schoolYear}/{semester}/create', [FacultyController::class, 'createAssessment'])->name('assessment.create');
         Route::post('/assessment/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'storeAssessment'])->name('assessment.store');
@@ -117,12 +115,17 @@ Route::prefix('faculty')
         Route::get('/scores/{assessmentId}', [FacultyController::class, 'manageScores'])->name('scores.manage');
         Route::post('/scores/{assessmentId}', [FacultyController::class, 'saveScores'])->name('scores.save');
 
-        // Analytics & Reports
+        // Analytics
         Route::get('/analytics/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'analytics'])->name('analytics');
-        Route::get('/reports/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'generateReport'])->name('reports.generate');
-        Route::get('/reports/{sectionId}/{subjectId}/{schoolYear}/{semester}/download', [FacultyController::class, 'downloadReport'])->name('reports.download');
-    });
 
+        Route::get('/reports/export-excel/{id}', [FacultyController::class, 'exportExcel'])->name('reports.export-excel');
+        Route::get('/reports/export-pdf/{id}', [FacultyController::class, 'exportPdf'])->name('reports.export-pdf');
+
+        // Reports - fixed routes with consistent naming
+        Route::get('/reports/generate/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'generateReport'])->name('reports.generate');
+        Route::post('/reports/download/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'downloadReport'])->name('reports.download');
+        Route::get('/reports/view/{id}', [FacultyController::class, 'viewReport'])->name('reports.view');
+    });
 /*
 |--------------------------------------------------------------------------
 | Client Logic

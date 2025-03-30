@@ -1,4 +1,5 @@
-@extends('admin.layout.app') {{-- Or use your dedicated faculty layout if available --}}
+@extends('faculty.layout.app')
+{{-- If you use a dedicated faculty layout, use that instead of admin.layout.app --}}
 
 @section('content')
 <div class="container mt-3">
