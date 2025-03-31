@@ -22,6 +22,16 @@ class UserSeeder extends Seeder
                 'user_role' => 'admin',
             ],
             [
+                'name' => 'Prof. Juan Dela Cruz',
+                'student_number' => 'FAC-2023-002',
+                'major' => 'Information Technology',
+                'sex' => 'M',
+                'course' => 'BSIT',
+                'year' => 'N/A',
+                'password' => bcrypt('faculty123'),
+                'user_role' => 'faculty',
+            ],
+            [
                 'name' => 'Amaro, Irish Ancheta',
                 'student_number' => '22-SC-4015',
                 'major' => 'SC_BSIT',

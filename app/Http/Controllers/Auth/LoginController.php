@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -18,14 +19,23 @@ class LoginController extends Controller
     {
         $credentials = $request->only('student_number', 'password');
 
+        // Add debug logging
+        Log::debug('Attempting login with: ' . $request->student_number);
+
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            Log::debug('Login successful for: ' . $user->name . ' (Role: ' . $user->user_role . ')');
 
             if ($user->user_role === 'admin') {
                 return redirect()->route('admin.dashboard');
+            } elseif ($user->user_role === 'faculty') {
+                // Changed from admin.faculty.index to faculty.dashboard
+                return redirect()->route('faculty.dashboard');
             } elseif ($user->user_role === 'client') {
                 return redirect()->route('client.dashboard');
             }
+        } else {
+            Log::debug('Login failed for: ' . $request->student_number);
         }
 
         return back()->withErrors([
