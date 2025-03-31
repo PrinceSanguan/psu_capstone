@@ -184,6 +184,18 @@
                     </a>
                 </li>
                 @endif
+                <!-- Messages -->
+                <li class="nav-item">
+                    <a href="{{ route('faculty.messages.index') }}" class="nav-link {{ request()->routeIs('faculty.messages.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-comments"></i>
+                        <p>
+                            Messages
+                            @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
+                                <span class="badge badge-danger right">{{ $unreadMessagesCount }}</span>
+                            @endif
+                        </p>
+                    </a>
+                </li>
 
                 <!-- Logout -->
                 <li class="nav-item mt-4">
