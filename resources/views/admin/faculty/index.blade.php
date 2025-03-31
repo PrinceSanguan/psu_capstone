@@ -62,7 +62,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Email</th>
+                                        <th>Faculty ID / Username</th>
                                         <th>Created At</th>
                                         <th>Actions</th>
                                     </tr>
@@ -72,7 +72,7 @@
                                         <tr>
                                             <td>{{ $member->id }}</td>
                                             <td>{{ $member->name }}</td>
-                                            <td>{{ $member->email }}</td>
+                                            <td>{{ $member->student_number }}</td>
                                             <td>{{ $member->created_at->format('Y-m-d') }}</td>
                                             <td>
                                                 <a href="{{ route('admin.faculty.edit', $member->id) }}" class="btn btn-warning btn-sm">
