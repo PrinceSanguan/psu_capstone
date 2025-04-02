@@ -178,20 +178,33 @@ class AdminController extends Controller
         $faculty = User::findOrFail($id);
         return view('admin.faculty.edit', compact('faculty'));
     }
-
     public function updateFaculty(Request $request, $id)
     {
         $faculty = User::findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'student_number' => 'required|string|max:255|unique:users,student_number,' . $id,
+            'major' => 'nullable|string|max:255',
+            'sex' => 'required|in:M,F',
+            'course' => 'required|string|max:255',
+            'year' => 'required|string|max:255',
         ]);
 
         $faculty->update([
             'name' => $validated['name'],
+            'student_number' => $validated['student_number'],
+            'major' => $validated['major'],
+            'sex' => $validated['sex'],
+            'course' => $validated['course'],
+            'year' => $validated['year'],
         ]);
 
         if ($request->filled('password')) {
+            $request->validate([
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+
             $faculty->update([
                 'password' => Hash::make($request->password),
             ]);
@@ -201,7 +214,6 @@ class AdminController extends Controller
             ->route('admin.faculty.index')
             ->with('success', 'Faculty member updated successfully');
     }
-
     /**
      * =============== FACULTY ASSIGNMENTS ================
      * Let admin assign a faculty to a brand-new section & subject

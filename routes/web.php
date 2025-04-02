@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\Faculty\FacultyController;
+use App\Http\Controllers\Faculty\FacultyMessagesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,10 +126,40 @@ Route::prefix('faculty')
         Route::get('/reports/generate/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'generateReport'])->name('reports.generate');
         Route::post('/reports/download/{sectionId}/{subjectId}/{schoolYear}/{semester}', [FacultyController::class, 'downloadReport'])->name('reports.download');
         Route::get('/reports/view/{id}', [FacultyController::class, 'viewReport'])->name('reports.view');
+
+       // Messages
+Route::get('/messages', [FacultyMessagesController::class, 'index'])->name('messages.index');
+Route::get('/messages/{userId}', [FacultyMessagesController::class, 'getConversation'])->name('messages.conversation');
+Route::post('/messages', [FacultyMessagesController::class, 'sendMessage'])->name('messages.send');
+Route::get('/messages/check/new', [FacultyMessagesController::class, 'checkNewMessages'])->name('messages.check');
     });
 /*
 |--------------------------------------------------------------------------
-| Client Logic
+| Client/Student Logic
 |--------------------------------------------------------------------------
 */
-Route::get('client/dashboard', [ClientController::class, 'index'])->name('client.dashboard');
+Route::prefix('student')
+    ->middleware(['auth','client'])
+    ->name('client.')
+    ->group(function() {
+        // Dashboard
+        Route::get('/dashboard', [ClientController::class, 'index'])->name('dashboard');
+
+        // Classes
+        Route::get('/classes', [ClientController::class, 'myClasses'])->name('classes.index');
+        Route::get('/classes/{sectionId}/{subjectId}/{schoolYear}/{semester}', [ClientController::class, 'classDetails'])->name('classes.details');
+
+        // Schedules
+        Route::get('/schedules', [ClientController::class, 'viewSchedules'])->name('schedules.index');
+
+        // Grades
+        Route::get('/grades', [ClientController::class, 'viewGrades'])->name('grades.index');
+
+        // Messages
+        Route::get('/messages', [ClientController::class, 'viewMessages'])->name('messages.index');
+        Route::get('/messages/{userId}', [ClientController::class, 'getConversation'])->name('messages.conversation');
+        Route::post('/messages', [ClientController::class, 'sendMessage'])->name('messages.send');
+
+        // Syllabus download
+        Route::get('/syllabus/{id}/download', [ClientController::class, 'downloadSyllabus'])->name('syllabus.download');
+    });
