@@ -132,6 +132,7 @@ You'll need to create users through the admin panel or database seeders:
 
 ```
 Admin: student_number: "administrator", password: "admin"
+Student: student_number: "22-SC-3193", password: "123"
 ```
 
 ## Educational Use
