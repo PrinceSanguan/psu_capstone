@@ -1,8 +1,4 @@
 <p align="center">
-<img src="https://github.com/user-attachments/assets/harvard-portal-logo.png" width="400" alt="Harvard Portal Logo">
-</p>
-
-<p align="center">
 <a href="#"><img src="https://img.shields.io/badge/laravel-v10.x-red.svg" alt="Laravel Version"></a>
 <a href="#"><img src="https://img.shields.io/badge/php-^8.1-blue.svg" alt="PHP Version"></a>
 <a href="#"><img src="https://img.shields.io/badge/mysql-8.0+-orange.svg" alt="MySQL Version"></a>
