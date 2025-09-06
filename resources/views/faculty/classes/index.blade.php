@@ -23,7 +23,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="{{ route('faculty.dashboard') }}" class="brand-link">
                 <i class="fas fa-graduation-cap brand-image elevation-3"></i>
-                <span class="brand-text font-weight-light">PSU Faculty Portal</span>
+                <span class="brand-text font-weight-light">Harvard Faculty Portal</span>
             </a>
 
             <div class="sidebar">
@@ -37,7 +37,8 @@
                 </div>
 
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
                         <li class="nav-item">
                             <a href="{{ route('faculty.dashboard') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -82,7 +83,8 @@
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="{{ route('faculty.dashboard') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('faculty.dashboard') }}">Dashboard</a>
+                                </li>
                                 <li class="breadcrumb-item active">My Classes</li>
                             </ol>
                         </div>
@@ -92,13 +94,13 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    @if(session('success'))
+                    @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    @if(session('error'))
+                    @if (session('error'))
                         <div class="alert alert-danger">
                             {{ session('error') }}
                         </div>
@@ -110,39 +112,40 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                @if(count($classes) > 0)
-                                <table id="classesTable" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Section</th>
-                                            <th>Subject</th>
-                                            <th>Code</th>
-                                            <th>School Year</th>
-                                            <th>Semester</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($classes as $class)
+                                @if (count($classes) > 0)
+                                    <table id="classesTable" class="table table-bordered table-striped">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $class->section_name }}</td>
-                                                <td>{{ $class->subject_name }}</td>
-                                                <td>{{ $class->subject_code }}</td>
-                                                <td>{{ $class->school_year }}</td>
-                                                <td>{{ $class->semester }}</td>
-                                                <td>
-                                                    <a href="{{ route('faculty.classes.details', ['sectionId' => $class->section_id, 'subjectId' => $class->subject_id, 'schoolYear' => $class->school_year, 'semester' => $class->semester]) }}" class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-eye"></i> View
-                                                    </a>
-                                                </td>
+                                                <th>Section</th>
+                                                <th>Subject</th>
+                                                <th>Code</th>
+                                                <th>School Year</th>
+                                                <th>Semester</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($classes as $class)
+                                                <tr>
+                                                    <td>{{ $class->section_name }}</td>
+                                                    <td>{{ $class->subject_name }}</td>
+                                                    <td>{{ $class->subject_code }}</td>
+                                                    <td>{{ $class->school_year }}</td>
+                                                    <td>{{ $class->semester }}</td>
+                                                    <td>
+                                                        <a href="{{ route('faculty.classes.details', ['sectionId' => $class->section_id, 'subjectId' => $class->subject_id, 'schoolYear' => $class->school_year, 'semester' => $class->semester]) }}"
+                                                            class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-eye"></i> View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 @else
-                                <div class="alert alert-info">
-                                    No classes assigned yet
-                                </div>
+                                    <div class="alert alert-info">
+                                        No classes assigned yet
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -172,18 +175,19 @@
 
     <script>
         $(document).ready(function() {
-            @if(count($classes) > 0)
-            $('#classesTable').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true
-            });
+            @if (count($classes) > 0)
+                $('#classesTable').DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true
+                });
             @endif
         });
     </script>
 </body>
+
 </html>

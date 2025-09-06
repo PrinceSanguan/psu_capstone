@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Faculty Portal') | PSU</title>
+    <title>@yield('title', 'Faculty Portal') | Harvard</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Bootstrap CSS -->
@@ -20,6 +22,7 @@
     <!-- Custom styles -->
     @yield('styles')
 </head>
+
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
@@ -27,7 +30,8 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
+                            class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ route('faculty.dashboard') }}" class="nav-link">Dashboard</a>
@@ -46,7 +50,8 @@
                         <span class="badge badge-warning navbar-badge message-count">{{ $unreadCount ?? 0 }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header"><span class="message-count">{{ $unreadCount ?? 0 }}</span> New Messages</span>
+                        <span class="dropdown-item dropdown-header"><span
+                                class="message-count">{{ $unreadCount ?? 0 }}</span> New Messages</span>
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('faculty.messages.index') }}" class="dropdown-item">
                             <i class="fas fa-envelope mr-2"></i> Go to Messages
@@ -70,7 +75,7 @@
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('logout') }}" class="dropdown-item"
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="fas fa-sign-out-alt mr-2"></i> Logout
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -88,7 +93,7 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Flash Messages -->
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show m-3">
                     {{ session('success') }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -97,7 +102,7 @@
                 </div>
             @endif
 
-            @if(session('error'))
+            @if (session('error'))
                 <div class="alert alert-danger alert-dismissible fade show m-3">
                     {{ session('error') }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -106,7 +111,7 @@
                 </div>
             @endif
 
-            @if(session('warning'))
+            @if (session('warning'))
                 <div class="alert alert-warning alert-dismissible fade show m-3">
                     {{ session('warning') }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -115,7 +120,7 @@
                 </div>
             @endif
 
-            @if(session('info'))
+            @if (session('info'))
                 <div class="alert alert-info alert-dismissible fade show m-3">
                     {!! session('info') !!}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -134,7 +139,8 @@
             <div class="float-right d-none d-sm-block">
                 <b>Version</b> 1.0.0
             </div>
-            <strong>Copyright &copy; {{ date('Y') }} <a href="#">PSU Faculty Portal</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; {{ date('Y') }} <a href="#">Harvard Faculty Portal</a>.</strong> All
+            rights reserved.
         </footer>
     </div>
     <!-- ./wrapper -->
@@ -168,10 +174,10 @@
     <!-- Check for new messages every minute -->
     <script>
         // Only run the check if user is logged in and the route exists
-        @if(Auth::check())
+        @if (Auth::check())
             setInterval(function() {
                 $.ajax({
-                    url: '{{ route("faculty.messages.check") }}',
+                    url: '{{ route('faculty.messages.check') }}',
                     method: 'GET',
                     success: function(response) {
                         $('.message-count').text(response.count);
@@ -192,4 +198,5 @@
     <!-- Page specific scripts -->
     @yield('scripts')
 </body>
+
 </html>

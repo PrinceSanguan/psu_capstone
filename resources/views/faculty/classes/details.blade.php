@@ -23,7 +23,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="{{ route('faculty.dashboard') }}" class="brand-link">
                 <i class="fas fa-graduation-cap brand-image elevation-3"></i>
-                <span class="brand-text font-weight-light">PSU Faculty Portal</span>
+                <span class="brand-text font-weight-light">Harvard Faculty Portal</span>
             </a>
 
             <div class="sidebar">
@@ -37,7 +37,8 @@
                 </div>
 
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
                         <li class="nav-item">
                             <a href="{{ route('faculty.dashboard') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -128,8 +129,10 @@
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="{{ route('faculty.dashboard') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('faculty.classes.index') }}">My Classes</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('faculty.dashboard') }}">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item"><a href="{{ route('faculty.classes.index') }}">My
+                                        Classes</a></li>
                                 <li class="breadcrumb-item active">{{ $subject->code }}</li>
                             </ol>
                         </div>
@@ -139,13 +142,13 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    @if(session('success'))
+                    @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    @if(session('error'))
+                    @if (session('error'))
                         <div class="alert alert-danger">
                             {{ session('error') }}
                         </div>
@@ -188,27 +191,32 @@
                                 <div class="card-body p-0">
                                     <ul class="nav nav-pills flex-column">
                                         <li class="nav-item">
-                                            <a href="{{ route('faculty.syllabus.upload', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="nav-link">
+                                            <a href="{{ route('faculty.syllabus.upload', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                class="nav-link">
                                                 <i class="fas fa-file-upload"></i> Upload Syllabus
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{ route('faculty.seatplan.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="nav-link">
+                                            <a href="{{ route('faculty.seatplan.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                class="nav-link">
                                                 <i class="fas fa-chair"></i> Create Seat Plan
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{ route('faculty.assessment.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="nav-link">
+                                            <a href="{{ route('faculty.assessment.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                class="nav-link">
                                                 <i class="fas fa-tasks"></i> Create Assessment
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{ route('faculty.analytics', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="nav-link">
+                                            <a href="{{ route('faculty.analytics', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                class="nav-link">
                                                 <i class="fas fa-chart-bar"></i> View Analytics
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{ route('faculty.reports.generate', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="nav-link">
+                                            <a href="{{ route('faculty.reports.generate', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                class="nav-link">
                                                 <i class="fas fa-file-pdf"></i> Generate Report
                                             </a>
                                         </li>
@@ -221,10 +229,14 @@
                             <div class="card">
                                 <div class="card-header p-2">
                                     <ul class="nav nav-pills">
-                                        <li class="nav-item"><a class="nav-link active" href="#students" data-toggle="tab">Students</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#assessments" data-toggle="tab">Assessments</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#syllabus" data-toggle="tab">Syllabus</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#seatplan" data-toggle="tab">Seat Plan</a></li>
+                                        <li class="nav-item"><a class="nav-link active" href="#students"
+                                                data-toggle="tab">Students</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="#assessments"
+                                                data-toggle="tab">Assessments</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="#syllabus"
+                                                data-toggle="tab">Syllabus</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="#seatplan"
+                                                data-toggle="tab">Seat Plan</a></li>
                                     </ul>
                                 </div>
                                 <div class="card-body">
@@ -252,7 +264,8 @@
                                                         </tr>
                                                     @empty
                                                         <tr>
-                                                            <td colspan="5" class="text-center">No students enrolled in this class</td>
+                                                            <td colspan="5" class="text-center">No students
+                                                                enrolled in this class</td>
                                                         </tr>
                                                     @endforelse
                                                 </tbody>
@@ -262,7 +275,8 @@
                                         <!-- Assessments Tab -->
                                         <div class="tab-pane" id="assessments">
                                             <div class="d-flex justify-content-end mb-3">
-                                                <a href="{{ route('faculty.assessment.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="btn btn-primary">
+                                                <a href="{{ route('faculty.assessment.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                    class="btn btn-primary">
                                                     <i class="fas fa-plus"></i> Create Assessment
                                                 </a>
                                             </div>
@@ -281,24 +295,27 @@
                                                         </thead>
                                                         <tbody>
                                                             @php $hasMidtermAssessments = false; @endphp
-                                                            @foreach($assessments as $assessment)
-                                                                @if($assessment->term == 'midterm')
+                                                            @foreach ($assessments as $assessment)
+                                                                @if ($assessment->term == 'midterm')
                                                                     @php $hasMidtermAssessments = true; @endphp
                                                                     <tr>
                                                                         <td>{{ $assessment->title }}</td>
-                                                                        <td>{{ ucfirst(str_replace('_', ' ', $assessment->type)) }}</td>
+                                                                        <td>{{ ucfirst(str_replace('_', ' ', $assessment->type)) }}
+                                                                        </td>
                                                                         <td>{{ $assessment->max_score }}</td>
                                                                         <td>
-                                                                            <a href="{{ route('faculty.scores.manage', ['assessmentId' => $assessment->id]) }}" class="btn btn-info btn-sm">
+                                                                            <a href="{{ route('faculty.scores.manage', ['assessmentId' => $assessment->id]) }}"
+                                                                                class="btn btn-info btn-sm">
                                                                                 <i class="fas fa-edit"></i> Scores
                                                                             </a>
                                                                         </td>
                                                                     </tr>
                                                                 @endif
                                                             @endforeach
-                                                            @if(!$hasMidtermAssessments)
+                                                            @if (!$hasMidtermAssessments)
                                                                 <tr>
-                                                                    <td colspan="4" class="text-center">No midterm assessments yet</td>
+                                                                    <td colspan="4" class="text-center">No midterm
+                                                                        assessments yet</td>
                                                                 </tr>
                                                             @endif
                                                         </tbody>
@@ -317,24 +334,27 @@
                                                         </thead>
                                                         <tbody>
                                                             @php $hasFinalAssessments = false; @endphp
-                                                            @foreach($assessments as $assessment)
-                                                                @if($assessment->term == 'final')
+                                                            @foreach ($assessments as $assessment)
+                                                                @if ($assessment->term == 'final')
                                                                     @php $hasFinalAssessments = true; @endphp
                                                                     <tr>
                                                                         <td>{{ $assessment->title }}</td>
-                                                                        <td>{{ ucfirst(str_replace('_', ' ', $assessment->type)) }}</td>
+                                                                        <td>{{ ucfirst(str_replace('_', ' ', $assessment->type)) }}
+                                                                        </td>
                                                                         <td>{{ $assessment->max_score }}</td>
                                                                         <td>
-                                                                            <a href="{{ route('faculty.scores.manage', ['assessmentId' => $assessment->id]) }}" class="btn btn-info btn-sm">
+                                                                            <a href="{{ route('faculty.scores.manage', ['assessmentId' => $assessment->id]) }}"
+                                                                                class="btn btn-info btn-sm">
                                                                                 <i class="fas fa-edit"></i> Scores
                                                                             </a>
                                                                         </td>
                                                                     </tr>
                                                                 @endif
                                                             @endforeach
-                                                            @if(!$hasFinalAssessments)
+                                                            @if (!$hasFinalAssessments)
                                                                 <tr>
-                                                                    <td colspan="4" class="text-center">No final assessments yet</td>
+                                                                    <td colspan="4" class="text-center">No final
+                                                                        assessments yet</td>
                                                                 </tr>
                                                             @endif
                                                         </tbody>
@@ -345,26 +365,32 @@
 
                                         <!-- Syllabus Tab -->
                                         <div class="tab-pane" id="syllabus">
-                                            @if($syllabus)
+                                            @if ($syllabus)
                                                 <div class="alert alert-success">
-                                                    <i class="fas fa-check-circle"></i> Syllabus has been uploaded on {{ date('F d, Y h:i A', strtotime($syllabus->upload_timestamp)) }}
+                                                    <i class="fas fa-check-circle"></i> Syllabus has been uploaded on
+                                                    {{ date('F d, Y h:i A', strtotime($syllabus->upload_timestamp)) }}
                                                 </div>
                                                 <div class="text-center">
-                                                    <p><strong>Filename:</strong> {{ $syllabus->original_filename }}</p>
-                                                    <a href="{{ route('faculty.syllabus.download', ['id' => $syllabus->id]) }}" class="btn btn-primary">
+                                                    <p><strong>Filename:</strong> {{ $syllabus->original_filename }}
+                                                    </p>
+                                                    <a href="{{ route('faculty.syllabus.download', ['id' => $syllabus->id]) }}"
+                                                        class="btn btn-primary">
                                                         <i class="fas fa-download"></i> Download Syllabus
                                                     </a>
-                                                    <a href="{{ route('faculty.syllabus.upload', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="btn btn-warning">
+                                                    <a href="{{ route('faculty.syllabus.upload', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                        class="btn btn-warning">
                                                         <i class="fas fa-upload"></i> Upload New Version
                                                     </a>
                                                 </div>
                                             @else
                                                 <div class="alert alert-warning">
-                                                    <i class="fas fa-exclamation-triangle"></i> No syllabus has been uploaded yet.
+                                                    <i class="fas fa-exclamation-triangle"></i> No syllabus has been
+                                                    uploaded yet.
                                                 </div>
                                                 <div class="text-center">
                                                     <p>Please upload a syllabus for this class.</p>
-                                                    <a href="{{ route('faculty.syllabus.upload', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="btn btn-primary">
+                                                    <a href="{{ route('faculty.syllabus.upload', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                        class="btn btn-primary">
                                                         <i class="fas fa-upload"></i> Upload Syllabus
                                                     </a>
                                                 </div>
@@ -373,15 +399,17 @@
 
                                         <!-- Seat Plan Tab -->
                                         <div class="tab-pane" id="seatplan">
-                                            @if($seatPlan)
+                                            @if ($seatPlan)
                                                 <div class="alert alert-success">
                                                     <i class="fas fa-check-circle"></i> Seat plan has been created.
                                                 </div>
                                                 <div class="text-center mb-3">
-                                                    <a href="{{ route('faculty.seatplan.view', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="btn btn-primary">
+                                                    <a href="{{ route('faculty.seatplan.view', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                        class="btn btn-primary">
                                                         <i class="fas fa-eye"></i> View Seat Plan
                                                     </a>
-                                                    <a href="{{ route('faculty.seatplan.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="btn btn-warning">
+                                                    <a href="{{ route('faculty.seatplan.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                        class="btn btn-warning">
                                                         <i class="fas fa-edit"></i> Edit Seat Plan
                                                     </a>
                                                 </div>
@@ -393,11 +421,13 @@
                                                 </div>
                                             @else
                                                 <div class="alert alert-warning">
-                                                    <i class="fas fa-exclamation-triangle"></i> No seat plan has been created yet.
+                                                    <i class="fas fa-exclamation-triangle"></i> No seat plan has been
+                                                    created yet.
                                                 </div>
                                                 <div class="text-center">
                                                     <p>Please create a seat plan for this class.</p>
-                                                    <a href="{{ route('faculty.seatplan.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="btn btn-primary">
+                                                    <a href="{{ route('faculty.seatplan.create', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                                        class="btn btn-primary">
                                                         <i class="fas fa-plus"></i> Create Seat Plan
                                                     </a>
                                                 </div>
@@ -428,4 +458,5 @@
     <!-- AdminLTE App -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 </body>
+
 </html>
