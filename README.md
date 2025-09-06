@@ -74,62 +74,6 @@ Make sure you have the following installed:
 -   MySQL 8.0+
 -   Node.js & NPM (optional, for asset compilation)
 
-### Step-by-Step Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/harvard-portal.git
-
-# Navigate to project directory
-cd harvard-portal
-
-# Install PHP dependencies
-composer install
-
-# Copy environment file
-cp .env.example .env
-
-# Generate application key
-php artisan key:generate
-
-# Create database (make sure MySQL is running)
-# Create a database named 'harvard_portal' in your MySQL
-
-# Update .env file with your database credentials
-# DB_DATABASE=harvard_portal
-# DB_USERNAME=your_username
-# DB_PASSWORD=your_password
-
-# Run database migrations
-php artisan migrate
-
-# (Optional) Seed the database with sample data
-php artisan db:seed
-
-# Start the development server
-php artisan serve
-```
-
-The application will be available at `http://localhost:8000`
-
-## Database Structure
-
-### Core Tables
-
--   **users** - All system users (admins, faculty, students)
--   **subjects** - Academic subjects with codes and descriptions
--   **sections** - Class sections with year levels and capacity
--   **assessments** - Quizzes, tests, activities, and exams
--   **student_scores** - Individual student scores for assessments
-
-### Relationship Tables
-
--   **section_subject** - Links sections with subjects and faculty
--   **section_student** - Student enrollment in specific sections
--   **syllabi** - Course syllabi uploaded by faculty
--   **seat_plans** - Classroom seating arrangements
--   **grading_systems** - Subject-specific grading percentages
-
 ## Key Features
 
 ### 🔐 Authentication System
@@ -191,49 +135,6 @@ Admin: student_number: "admin001", password: "password"
 Faculty: student_number: "faculty001", password: "password"
 Student: student_number: "student001", password: "password"
 ```
-
-## Project Structure
-
-```
-harvard-portal/
-├── app/
-│   ├── Http/Controllers/    # Application logic
-│   │   ├── Admin/          # Admin-specific controllers
-│   │   ├── Faculty/        # Faculty-specific controllers
-│   │   ├── Client/         # Student-specific controllers
-│   │   └── Auth/           # Authentication controllers
-│   └── Models/             # Database models
-├── database/
-│   └── migrations/         # Database structure
-├── resources/
-│   └── views/              # HTML templates
-│       ├── admin/          # Admin interface
-│       ├── faculty/        # Faculty interface
-│       └── client/         # Student interface
-├── routes/
-│   └── web.php             # Application routes
-└── public/                 # Web-accessible files
-```
-
-## Contributing & Customization
-
-This project is perfect for learning and customization:
-
-### Learning Opportunities
-
--   Add new features like attendance tracking or messaging
--   Improve UI/UX with modern frontend frameworks
--   Implement API endpoints for mobile app integration
--   Add comprehensive testing (unit and feature tests)
--   Enhance security with additional measures
-
-### Customization Ideas
-
--   Change university branding to your own school
--   Add support for different grading systems
--   Implement multiple language support
--   Create mobile-responsive designs
--   Add email notifications and alerts
 
 ## Educational Use
 
