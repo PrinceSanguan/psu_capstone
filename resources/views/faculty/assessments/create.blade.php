@@ -23,7 +23,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="{{ route('faculty.dashboard') }}" class="brand-link">
                 <i class="fas fa-graduation-cap brand-image elevation-3"></i>
-                <span class="brand-text font-weight-light">PSU Faculty Portal</span>
+                <span class="brand-text font-weight-light">Harvard Faculty Portal</span>
             </a>
 
             <div class="sidebar">
@@ -37,7 +37,8 @@
                 </div>
 
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
                         <li class="nav-item">
                             <a href="{{ route('faculty.dashboard') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -82,9 +83,13 @@
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="{{ route('faculty.dashboard') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('faculty.classes.index') }}">My Classes</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('faculty.classes.details', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}">{{ $subject->code }}</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('faculty.dashboard') }}">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item"><a href="{{ route('faculty.classes.index') }}">My
+                                        Classes</a></li>
+                                <li class="breadcrumb-item"><a
+                                        href="{{ route('faculty.classes.details', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}">{{ $subject->code }}</a>
+                                </li>
                                 <li class="breadcrumb-item active">Create Assessment</li>
                             </ol>
                         </div>
@@ -94,13 +99,13 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    @if(session('success'))
+                    @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    @if(session('error'))
+                    @if (session('error'))
                         <div class="alert alert-danger">
                             {{ session('error') }}
                         </div>
@@ -139,13 +144,15 @@
                                 <div class="card-header">
                                     <h3 class="card-title">Assessment Details</h3>
                                 </div>
-                                <form action="{{ route('faculty.assessment.store', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" method="POST">
+                                <form
+                                    action="{{ route('faculty.assessment.store', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                    method="POST">
                                     @csrf
                                     <div class="card-body">
-                                        @if($errors->any())
+                                        @if ($errors->any())
                                             <div class="alert alert-danger">
                                                 <ul class="mb-0">
-                                                    @foreach($errors->all() as $error)
+                                                    @foreach ($errors->all() as $error)
                                                         <li>{{ $error }}</li>
                                                     @endforeach
                                                 </ul>
@@ -154,18 +161,28 @@
 
                                         <div class="form-group">
                                             <label for="title">Assessment Title</label>
-                                            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="e.g. Quiz 1, Midterm Exam" required>
+                                            <input type="text" class="form-control" id="title" name="title"
+                                                value="{{ old('title') }}" placeholder="e.g. Quiz 1, Midterm Exam"
+                                                required>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="type">Assessment Type</label>
                                             <select class="form-control" id="type" name="type" required>
                                                 <option value="" selected disabled>Select type</option>
-                                                <option value="quiz" {{ old('type') == 'quiz' ? 'selected' : '' }}>Quiz</option>
-                                                <option value="unit_test" {{ old('type') == 'unit_test' ? 'selected' : '' }}>Unit Test</option>
-                                                <option value="activity" {{ old('type') == 'activity' ? 'selected' : '' }}>Activity</option>
-                                                <option value="midterm_exam" {{ old('type') == 'midterm_exam' ? 'selected' : '' }}>Midterm Exam</option>
-                                                <option value="final_exam" {{ old('type') == 'final_exam' ? 'selected' : '' }}>Final Exam</option>
+                                                <option value="quiz" {{ old('type') == 'quiz' ? 'selected' : '' }}>
+                                                    Quiz</option>
+                                                <option value="unit_test"
+                                                    {{ old('type') == 'unit_test' ? 'selected' : '' }}>Unit Test
+                                                </option>
+                                                <option value="activity"
+                                                    {{ old('type') == 'activity' ? 'selected' : '' }}>Activity</option>
+                                                <option value="midterm_exam"
+                                                    {{ old('type') == 'midterm_exam' ? 'selected' : '' }}>Midterm Exam
+                                                </option>
+                                                <option value="final_exam"
+                                                    {{ old('type') == 'final_exam' ? 'selected' : '' }}>Final Exam
+                                                </option>
                                             </select>
                                         </div>
 
@@ -173,29 +190,36 @@
                                             <label for="term">Assessment Term</label>
                                             <select class="form-control" id="term" name="term" required>
                                                 <option value="" selected disabled>Select term</option>
-                                                <option value="midterm" {{ old('term') == 'midterm' ? 'selected' : '' }}>Midterm</option>
-                                                <option value="final" {{ old('term') == 'final' ? 'selected' : '' }}>Final</option>
+                                                <option value="midterm"
+                                                    {{ old('term') == 'midterm' ? 'selected' : '' }}>Midterm</option>
+                                                <option value="final" {{ old('term') == 'final' ? 'selected' : '' }}>
+                                                    Final</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="max_score">Maximum Score</label>
-                                            <input type="number" class="form-control" id="max_score" name="max_score" value="{{ old('max_score') }}" min="1" required>
+                                            <input type="number" class="form-control" id="max_score"
+                                                name="max_score" value="{{ old('max_score') }}" min="1"
+                                                required>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="schedule_date">Schedule Date (Optional)</label>
-                                            <input type="date" class="form-control" id="schedule_date" name="schedule_date" value="{{ old('schedule_date') }}">
+                                            <input type="date" class="form-control" id="schedule_date"
+                                                name="schedule_date" value="{{ old('schedule_date') }}">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="schedule_time">Schedule Time (Optional)</label>
-                                            <input type="time" class="form-control" id="schedule_time" name="schedule_time" value="{{ old('schedule_time') }}">
+                                            <input type="time" class="form-control" id="schedule_time"
+                                                name="schedule_time" value="{{ old('schedule_time') }}">
                                         </div>
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary">Create Assessment</button>
-                                        <a href="{{ route('faculty.classes.details', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}" class="btn btn-default">Cancel</a>
+                                        <a href="{{ route('faculty.classes.details', ['sectionId' => $section->id, 'subjectId' => $subject->id, 'schoolYear' => $schoolYear, 'semester' => $semester]) }}"
+                                            class="btn btn-default">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -221,4 +245,5 @@
     <!-- AdminLTE App -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 </body>
+
 </html>
