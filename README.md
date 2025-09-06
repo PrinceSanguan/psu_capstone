@@ -131,9 +131,7 @@ This project is an excellent learning resource for students because it demonstra
 You'll need to create users through the admin panel or database seeders:
 
 ```
-Admin: student_number: "admin001", password: "password"
-Faculty: student_number: "faculty001", password: "password"
-Student: student_number: "student001", password: "password"
+Admin: student_number: "administrator", password: "admin"
 ```
 
 ## Educational Use
